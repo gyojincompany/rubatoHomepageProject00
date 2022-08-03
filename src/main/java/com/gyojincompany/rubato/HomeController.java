@@ -71,9 +71,42 @@ public class HomeController {
 		session.setAttribute("sessionId", memberid);
 		session.setAttribute("sessionName", membername);
 		
+		return "redirect:index";
+	}
+	
+	@RequestMapping(value = "/logout")
+	public String logout(HttpSession session) {
+		
+		session.invalidate();//세션 삭제->로그아웃
 		
 		return "redirect:index";
 	}
 	
+	@RequestMapping(value = "/memberLoginOk", method = RequestMethod.POST)
+	public String memberLoginOk(HttpServletRequest request, Model model) {
+		
+		String memberid = request.getParameter("mid");
+		String memberpw = request.getParameter("mpw");
+		
+		MemberDao memberDao = sqlSession.getMapper(MemberDao.class);
+		
+		int checkIdValue = memberDao.checkIdDao(memberid);
+		//DB에 아이디가 존재하면 1이 반환, 없으면 0이 반환
+		int checkPwValue = memberDao.checkPwDao(memberid, memberpw);
+		//DB에 아이디와 비밀번호가 일치하는 계정이 존재하면 1이 반환, 없으면 0이 반환
+		
+		model.addAttribute("checkIdValue", checkIdValue);
+		model.addAttribute("checkPwValue", checkPwValue);
+		
+		if(checkPwValue == 1) {
+			
+			HttpSession session = request.getSession();
+			
+			session.setAttribute("sessionId", memberid);
+			
+		}
+		
+		return "loginOk";
+	}
 	
 }
