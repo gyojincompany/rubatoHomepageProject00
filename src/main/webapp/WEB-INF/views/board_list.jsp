@@ -105,7 +105,7 @@
     <img src="${pageContext.request.contextPath }/resources/img/comm.gif">
     <h2 id="board_title">자유 게시판 </h2>
     <div id="total_search">
-      <div id="total">▷ 총 5개의 게시물이 있습니다.</div>
+      <div id="total">▷ 총 ${listCount }개의 게시물이 있습니다.</div>
       <div id="search">
         <div id="select_img"><img src="${pageContext.request.contextPath }/resources/img/select_search.gif"></div>
         <div id="search_select">
@@ -133,10 +133,12 @@
       
         <td class="col1">${fbdto.fbnum }</td>
         <td class="col2">
-          <a href="board_view">${fbdto.fbtitle }</a>
+          <a href="board_view?fbnum=${fbdto.fbnum }">${fbdto.fbtitle }</a>
         </td>
         <td class="col3">${fbdto.mname }</td>
-        <td class="col4">${fbdto.fbdate }</td>
+        <td class="col4">
+        	<c:out value="${fn:substring(fbdto.fbdate,0,10) }"></c:out> 
+        </td>
         <td class="col5">${fbdto.fbhit }</td>
       </tr>
       </c:forEach>

@@ -42,13 +42,24 @@ public class HomeController {
 		
 		ArrayList<FBoardDto> fbDtos = boardDao.fblistDao();
 		
+		int listCount = fbDtos.size();//게시판 글목록의 글 개수
+		
 		model.addAttribute("fblist", fbDtos);
+		model.addAttribute("listCount", listCount);
 		
 		return "board_list";
 	}
 	
 	@RequestMapping(value = "/board_view")
-	public String board_view() {
+	public String board_view(HttpServletRequest request, Model model) {
+		
+		String fbnum = request.getParameter("fbnum");
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		
+		FBoardDto fboardDto = boardDao.fbviewDao(fbnum);
+		
+		model.addAttribute("fbView", fboardDto);
 		
 		return "board_view";
 	}
