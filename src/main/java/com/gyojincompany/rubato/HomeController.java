@@ -1,5 +1,8 @@
 package com.gyojincompany.rubato;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.gyojincompany.rubato.dao.BoardDao;
 import com.gyojincompany.rubato.dao.MemberDao;
+import com.gyojincompany.rubato.dto.FBoardDto;
 
 @Controller
 public class HomeController {
@@ -31,7 +36,13 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "/board_list")
-	public String board_list() {
+	public String board_list(HttpServletRequest request, Model model) {
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);		
+		
+		ArrayList<FBoardDto> fbDtos = boardDao.fblistDao();
+		
+		model.addAttribute("fblist", fbDtos);
 		
 		return "board_list";
 	}
@@ -108,5 +119,37 @@ public class HomeController {
 		
 		return "loginOk";
 	}
+	
+	@RequestMapping(value = "board_writeOk", method=RequestMethod.POST)
+	public String board_writeOk(HttpServletRequest request) {
+		
+		String fbtitle = request.getParameter("fbtitle");
+		String fbcontent = request.getParameter("fbcontent");
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		
+		HttpSession session = request.getSession();
+		
+		String fbid = (String) session.getAttribute("sessionId");
+		
+		if(fbid == null) {
+			fbid = "GUEST";
+		}
+		
+		boardDao.fbwriteDao(fbid, fbtitle, fbcontent);
+		
+		return "redirect:board_list";
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 }
