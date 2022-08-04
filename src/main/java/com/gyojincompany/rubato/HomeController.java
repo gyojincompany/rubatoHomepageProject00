@@ -38,9 +38,23 @@ public class HomeController {
 	@RequestMapping(value = "/board_list")
 	public String board_list(HttpServletRequest request, Model model) {
 		
+		String searchKeyword = request.getParameter("searchKeyword");
+		String searchOption = request.getParameter("searchOption");
+		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);		
 		
-		ArrayList<FBoardDto> fbDtos = boardDao.fblistDao();
+		ArrayList<FBoardDto> fbDtos = null;
+		
+		if(searchKeyword == null) {
+			fbDtos = boardDao.fblistDao();
+		} else if(searchOption.equals("title" )) {
+			fbDtos = boardDao.fbTitleSearchlist(searchKeyword);
+		} else if(searchOption.equals("content")) {
+			fbDtos = boardDao.fbContentSearchlist(searchKeyword);
+		} else if(searchOption.equals("writer")) {
+			fbDtos = boardDao.fbNameSearchlist(searchKeyword);
+		}				
+			
 		
 		int listCount = fbDtos.size();//게시판 글목록의 글 개수
 		
@@ -56,6 +70,8 @@ public class HomeController {
 		String fbnum = request.getParameter("fbnum");
 		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		
+		boardDao.fbhitDao(fbnum);//조회수 증가 함수 호출
 		
 		FBoardDto fboardDto = boardDao.fbviewDao(fbnum);
 		

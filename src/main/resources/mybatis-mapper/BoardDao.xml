@@ -22,6 +22,30 @@
 	    WHERE t1.fbid = t2.mid AND t1.fbnum = #{param1}	    
 	</select>
 	
+	<update id="fbhitDao">
+		UPDATE rubato_freeboard SET fbhit=fbhit+1 WHERE fbnum=#{param1}
+	</update>
+	
+	<select id="fbTitleSearchlist" resultType="com.gyojincompany.rubato.dto.FBoardDto">	
+		SELECT t1.fbnum , t1.fbid , t1.fbtitle , t1.fbcontent,t1.fbdate,t1.fbhit,t1.fbreplycount,t2.mname
+	    FROM rubato_freeboard T1,rubato_member T2
+	    WHERE t1.fbid = t2.mid AND t1.fbtitle LIKE '%' || #{param1} || '%'
+	    ORDER BY t1.fbnum DESC 	
+	</select>
+	
+	<select id="fbContentSearchlist" resultType="com.gyojincompany.rubato.dto.FBoardDto">	
+		SELECT t1.fbnum , t1.fbid , t1.fbtitle , t1.fbcontent,t1.fbdate,t1.fbhit,t1.fbreplycount,t2.mname
+	    FROM rubato_freeboard T1,rubato_member T2
+	    WHERE t1.fbid = t2.mid AND t1.fbcontent LIKE '%' || #{param1} || '%'
+	    ORDER BY t1.fbnum DESC 	
+	</select>
+	
+	<select id="fbNameSearchlist" resultType="com.gyojincompany.rubato.dto.FBoardDto">	
+		SELECT t1.fbnum , t1.fbid , t1.fbtitle , t1.fbcontent,t1.fbdate,t1.fbhit,t1.fbreplycount,t2.mname
+	    FROM rubato_freeboard T1,rubato_member T2
+	    WHERE t1.fbid = t2.mid AND t2.mname LIKE '%' || #{param1} || '%'
+	    ORDER BY t1.fbnum DESC 	
+	</select>
 	
 	
 </mapper>
