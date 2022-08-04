@@ -1,17 +1,22 @@
 package com.gyojincompany.rubato;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gyojincompany.rubato.dao.BoardDao;
 import com.gyojincompany.rubato.dao.MemberDao;
@@ -148,7 +153,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value = "board_writeOk", method=RequestMethod.POST)
-	public String board_writeOk(HttpServletRequest request) {
+	public String board_writeOk(HttpServletRequest request, @RequestPart MultipartFile uploadFiles) throws Exception{
 		
 		String fbtitle = request.getParameter("fbtitle");
 		String fbcontent = request.getParameter("fbcontent");
@@ -163,7 +168,36 @@ public class HomeController {
 			fbid = "GUEST";
 		}
 		
-		boardDao.fbwriteDao(fbid, fbtitle, fbcontent);
+		if(uploadFiles.isEmpty()) { //파일 첨부 여부를 판단(true or false)
+			boardDao.fbwriteDao(fbid, fbtitle, fbcontent);
+			//첨부된 파일이 없는 경우 제목과 내용만 db에 업로드
+		} else {
+			boardDao.fbwriteDao(fbid, fbtitle, fbcontent);
+			ArrayList<FBoardDto> fbDtos = boardDao.fblistDao();
+			
+			String orifilename = uploadFiles.getOriginalFilename();//원래 파일의 이름 가져오기
+			String fileextension = FilenameUtils.getExtension(orifilename).toLowerCase();//확장자 가져오기(소문자로 변환)
+			String fileurl = "D:\\springboot_workspace\\rubatoHomepage00\\src\\main\\resources\\static\\uploadfiles\\";
+			String filename;//변경된 파일의 이름(서버에 저장되는 파일의 이름)
+			File desinationFile;//java.io의 파일관련 클래스
+			
+			do {
+			filename = RandomStringUtils.randomAlphanumeric(32) + "." + fileextension;
+			//영문대소문자와 숫자가 혼합된 랜덤 32자의 파일이름을 생성한 후 확장자 연결하여 서버에 저장될 파일의 이름 생성			
+			desinationFile = new File(fileurl+filename);
+			}while(desinationFile.exists());//같은 이름의 파일이 저장소에 존재하면 true 출력
+			
+			desinationFile.getParentFile().mkdir();
+			uploadFiles.transferTo(desinationFile);
+			
+			int boardnum = fbDtos.get(0).getFbnum();
+			//가져온 게시글 목록 중에서 가장 최근에 만들어진 글(FBoardDto)을 불러와 게시글번호(fbnum)만 추출
+			
+			boardDao.fbfileInsertDao(boardnum, filename, orifilename, fileurl, fileextension);
+			
+		}
+		
+		
 		
 		return "redirect:board_list";
 	}	

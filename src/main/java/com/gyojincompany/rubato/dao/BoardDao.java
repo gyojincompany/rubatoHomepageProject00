@@ -17,4 +17,6 @@ public interface BoardDao {
 	//자유게시판 내용에서 검색한 결과 리스트 가져오기
 	public ArrayList<FBoardDto> fbNameSearchlist(String keyword);
 	//자유게시판 글쓴이로 검색한 결과 리스트 가져오기
+	public void fbfileInsertDao(int boardnum, String filename, String orifilename, String fileurl, String fileextension);
+	//파일 업로드(파일이 첨부된 게시글번호, 변경된 파일이름, 원본 파일이름, 파일저장경로, 파일의 확장자)
 }

@@ -47,6 +47,11 @@
 	    ORDER BY t1.fbnum DESC 	
 	</select>
 	
+	<insert id="fbfileInsertDao">
+		INSERT INTO rubato_uploadfile(filenum, boardnum, filename, orifilename, fileurl, fileextension) 
+		VALUES(rubatofile_seq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5})
+	</insert>
+	
 	
 </mapper>
 	
