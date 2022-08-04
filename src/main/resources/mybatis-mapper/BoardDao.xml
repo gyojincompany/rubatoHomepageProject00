@@ -47,11 +47,24 @@
 	    ORDER BY t1.fbnum DESC 	
 	</select>
 	
+	<!-- 첨부파일 SQL -->
 	<insert id="fbfileInsertDao">
 		INSERT INTO rubato_uploadfile(filenum, boardnum, filename, orifilename, fileurl, fileextension) 
 		VALUES(rubatofile_seq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5})
 	</insert>
 	
+	<select id="fbGetFileInfoDao" resultType="com.gyojincompany.rubato.dto.FileDto">
+		SELECT * FROM rubato_uploadfile WHERE boardnum=#{param1}
+	</select>
+	
+	<!-- 댓글 SQL -->
+	<insert id="rbwriteDao">	
+		INSERT INTO rubato_replyboard(rbnum, boardnum, rbid, rbcontent) VALUES(rubatorb_seq.nextval, #{param1}, #{param2}, #{param3})
+	</insert>
+	
+	<select id="rblistDao" resultType="com.gyojincompany.rubato.dto.ReplyDto">
+		SELECT * FROM rubato_replyboard WHERE boardnum = #{param1} ORDER BY rbnum ASC
+	</select>
 	
 </mapper>
 	

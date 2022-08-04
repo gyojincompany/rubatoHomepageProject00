@@ -48,3 +48,9 @@ section #buttons {
     text-align:right;
     margin:20px 0 0 0;
 }
+
+span.file_info {
+	
+	font-size: 11px;
+	color: #808080;
+}

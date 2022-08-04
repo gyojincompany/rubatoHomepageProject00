@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head> 
@@ -109,11 +110,50 @@
   </div>	
   <p id="view_content">
     ${fbView.fbcontent }
-  </p>		
+  </p>
+  <br>
+  <c:if test="${fileDto.fileextension  == 'jpg' or fileDto.fileextension  == 'gif' or fileDto.fileextension  == 'png' or fileDto.fileextension  == 'bmp'}">
+  	<p id="image_view">  	
+  		<img src="${pageContext.request.contextPath }/resources/uploadfiles/${fileDto.filename}">
+  	</p>
+  </c:if>
+  
+  <hr>
+  <br>
+  <p id="file_info">
+  	 
+  	<a href="${pageContext.request.contextPath }/resources/uploadfiles/${fileDto.filename}" style="text-decoration:none">
+  	<span class="file_info">※ 첨부파일 : ${fileDto.orifilename}</span></a>
+  </p>
+  <br>
+  <!-- 해당 글의 댓글 리스트 출력 -->
+  <table border="1" cellpadding="0" cellspacing="0" width="750">
+  	<c:forEach items="${rblist }" var="rbdto">
+  		<tr>
+  			<td>
+  				댓글쓴이 : ${rbdto.rbid }
+  			</td>  			
+  		</tr>
+  		<tr>
+  			<td>
+  				${rbdto.rbcontent }
+  			</td>
+  		</tr>
+  		<tr>
+  			<td>
+  				댓글게시일 : ${rbdto.rbdate }
+  			</td>
+  		</tr>
+  	</c:forEach>
+  </table>
+  
   <div id="comment_box">
+  	<form action="replyOk">
+  	<input type="hidden" name="boardnum" value="${fbView.fbnum }">
     <img id="title_comment" src="${pageContext.request.contextPath }/resources/img/title_comment.gif">
-    <textarea></textarea>
-    <img id="ok_ripple" src="${pageContext.request.contextPath }/resources/img/ok_ripple.gif">
+    <textarea name="rbcontent"></textarea>
+    <input type="image" id="ok_ripple" src="${pageContext.request.contextPath }/resources/img/ok_ripple.gif">
+    </form>
   </div>
   <div id="buttons">
     <a href="#"><img src="${pageContext.request.contextPath }/resources/img/delete.png"></a>		
