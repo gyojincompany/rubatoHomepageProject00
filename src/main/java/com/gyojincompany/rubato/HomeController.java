@@ -86,6 +86,7 @@ public class HomeController {
 		model.addAttribute("fbView", fboardDto);
 		model.addAttribute("fileDto", fileDto);
 		model.addAttribute("rblist", boardDao.rblistDao(fbnumint));//댓글리스트 가져와서 반환하기
+		model.addAttribute("boardId", fboardDto.getFbid());//게시판 아이디 불러오기
 		
 		return "board_view";
 	}
@@ -230,11 +231,22 @@ public class HomeController {
 		
 		model.addAttribute("fbView", boardDao.fbviewDao(boardnum));
 		model.addAttribute("rblist", boardDao.rblistDao(fbnum));
+		model.addAttribute("boardId", boardDao.fbviewDao(boardnum).getFbid());//게시판 아이디 불러오기
 		
 		return "board_view";
 	}
 	
-	
+	@RequestMapping(value = "/fbdelete")
+	public String delete(HttpServletRequest request) {
+		
+		String fbnum = request.getParameter("fbnum");
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		
+		boardDao.fbdeleteDao(fbnum);
+		
+		return "redirect:board_list";
+	}
 	
 	
 	

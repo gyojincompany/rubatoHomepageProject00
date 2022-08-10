@@ -47,6 +47,10 @@
 	    ORDER BY t1.fbnum DESC 	
 	</select>
 	
+	<delete id="fbdeleteDao">
+		DELETE FROM rubato_freeboard WHERE fbnum=#{param1}
+	</delete>
+	
 	<!-- 첨부파일 SQL -->
 	<insert id="fbfileInsertDao">
 		INSERT INTO rubato_uploadfile(filenum, boardnum, filename, orifilename, fileurl, fileextension) 
